@@ -8,7 +8,6 @@ use Core\Application\Transfer\GetUserRepositoryInterface;
 use Core\Application\Transfer\NotificationServiceInterface;
 use Core\Application\Transfer\SaveTransactionRepositoryInterface;
 use Core\Application\Transfer\Transfer;
-use Core\Domain\Exceptions\TransactionNotAuthorizedException;
 use Core\Domain\User\Common;
 use Core\Domain\User\Shopkeeper;
 use Core\Domain\User\Uuid;
