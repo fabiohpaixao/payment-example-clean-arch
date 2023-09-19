@@ -8,6 +8,7 @@ use Core\Domain\Exceptions\InvalidValueException;
 use Core\Domain\User\Shopkeeper;
 use Core\Domain\User\Uuid;
 use Core\Domain\Wallet;
+use DomainException;
 use PHPUnit\Framework\TestCase;
 
 class ShopKeeperTest extends TestCase
@@ -67,7 +68,7 @@ class ShopKeeperTest extends TestCase
         );
 
         //Assert
-        $this->expectException(\DomainException::class);
+        $this->expectException(DomainException::class);
 
         //Act
         $shopKeeper->incrementOnWallet(10);

@@ -9,6 +9,7 @@ use Core\Domain\User\Common;
 use Core\Domain\User\Shopkeeper;
 use Core\Domain\User\Uuid;
 use Core\Domain\Wallet;
+use DomainException;
 use PHPUnit\Framework\TestCase;
 
 class CommonTest extends TestCase
@@ -80,7 +81,7 @@ class CommonTest extends TestCase
         $name = 'Name Teste';
         $password = 'password';
         $walletMock = $this->createMock(Wallet::class);
-        $walletMock->method('increment')
+        $walletMock->method('decrement')
             ->willThrowException(new InvalidValueException());
 
         $common = new Common(
@@ -93,7 +94,7 @@ class CommonTest extends TestCase
         );
 
         //Assert
-        $this->expectException(\DomainException::class);
+        $this->expectException(DomainException::class);
 
         //Act
         $common->decrementFromWallet(10);

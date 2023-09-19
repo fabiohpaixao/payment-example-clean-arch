@@ -28,7 +28,7 @@ class TransferTest extends TestCase
         $this->userCommonDummy = $this->createMock(Common::class);
     }
 
-    public function testMustBeTransfer():void
+    public function testMustBeTransfer(): void
     {
         //Arrange
         $getUserRepository = $this->createMock(GetUserRepositoryInterface::class)

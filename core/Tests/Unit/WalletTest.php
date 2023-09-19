@@ -25,7 +25,7 @@ class WalletTest extends TestCase
     {
         //Arrange
         $balanceInitial = 100;
-        $balanceFinal = 100;
+        $balanceFinal = 50;
         $decrement = 50;
 
 
@@ -47,7 +47,7 @@ class WalletTest extends TestCase
 
         //Act
         $wallet = new Wallet($balanceInitial);
-        $wallet->decrement($increment);
+        $wallet->increment($increment);
 
         //Assert
         $this->assertEquals($wallet->getBalance(), $balanceFinal);
@@ -58,14 +58,11 @@ class WalletTest extends TestCase
         //Arrange
         $balanceInitial = 50;
         $decrement = 100;
-
+        $this->expectException(InsufficientBalanceException::class);
 
         //Act
         $wallet = new Wallet($balanceInitial);
         $wallet->decrement($decrement);
-
-        //Assert
-        $this->expectException(InsufficientBalanceException::class);
     }
 
     function testItShouldNotDecreaseIfValueIsLessThanZero()
@@ -74,13 +71,12 @@ class WalletTest extends TestCase
         $balanceInitial = 50;
         $decrement = -1;
 
+        //Assert
+        $this->expectException(InvalidValueException::class);
 
         //Act
         $wallet = new Wallet($balanceInitial);
         $wallet->decrement($decrement);
-
-        //Assert
-        $this->expectException(InvalidValueException::class);
     }
 
     function testItShouldNotIncrementIfValueIsLessThanZero()
@@ -89,12 +85,11 @@ class WalletTest extends TestCase
         $balanceInitial = 50;
         $decrement = -1;
 
+        //Assert
+        $this->expectException(InvalidValueException::class);
 
         //Act
         $wallet = new Wallet($balanceInitial);
         $wallet->increment($decrement);
-
-        //Assert
-        $this->expectException(InvalidValueException::class);
     }
 }
