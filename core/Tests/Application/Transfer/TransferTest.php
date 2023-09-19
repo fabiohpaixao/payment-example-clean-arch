@@ -8,9 +8,12 @@ use Core\Application\Transfer\GetUserRepositoryInterface;
 use Core\Application\Transfer\NotificationServiceInterface;
 use Core\Application\Transfer\SaveTransactionRepositoryInterface;
 use Core\Application\Transfer\Transfer;
+use Core\Domain\Exceptions\TransactionNotAuthorizedException;
 use Core\Domain\User\Common;
 use Core\Domain\User\Shopkeeper;
 use Core\Domain\User\Uuid;
+use DomainException;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -67,6 +70,70 @@ class TransferTest extends TestCase
         // Act
         $transferUseCase = new Transfer(
             $transactionRepository,
+            $getUserRepository,
+            $authorizationService,
+            $notificationService,
+            $this->logger
+        );
+        $transferUseCase->handle($transferRequest);
+    }
+
+    public function testMustBeThrowDomainException()
+    {
+        // Arrange
+        $transferRequest = new TransferRequest(100, uniqid(), uniqid());
+
+        // Assert
+        $payeeUuid = $this->createMock(Uuid::class);
+
+        $payee = $this->createMock(Shopkeeper::class);
+        $payee->method('getUuid')
+            ->willReturn($payeeUuid);
+        $payee->method('incrementOnWallet')
+            ->willThrowException(new DomainException());
+
+        $getUserRepository = $this->createMock(GetUserRepositoryInterface::class);
+        $authorizationService = $this->createMock(AuthorizationServiceInterface::class);
+        $notificationService = $this->createMock(NotificationServiceInterface::class);
+        $saveTransactionRepository = $this->createMock(SaveTransactionRepositoryInterface::class);
+
+        $this->expectException(DomainException::class);
+
+        // Act
+        $transferUseCase = new Transfer(
+            $saveTransactionRepository,
+            $getUserRepository,
+            $authorizationService,
+            $notificationService,
+            $this->logger
+        );
+        $transferUseCase->handle($transferRequest);
+    }
+
+    public function testMustBeThrowException()
+    {
+        // Arrange
+        $transferRequest = new TransferRequest(100, uniqid(), uniqid());
+
+        // Assert
+        $payeeUuid = $this->createMock(Uuid::class);
+
+        $payee = $this->createMock(Shopkeeper::class);
+        $payee->method('getUuid')
+            ->willReturn($payeeUuid);
+        $payee->method('incrementOnWallet')
+            ->willThrowException(new Exception());
+
+        $getUserRepository = $this->createMock(GetUserRepositoryInterface::class);
+        $authorizationService = $this->createMock(AuthorizationServiceInterface::class);
+        $notificationService = $this->createMock(NotificationServiceInterface::class);
+        $saveTransactionRepository = $this->createMock(SaveTransactionRepositoryInterface::class);
+
+        $this->expectException(Exception::class);
+
+        // Act
+        $transferUseCase = new Transfer(
+            $saveTransactionRepository,
             $getUserRepository,
             $authorizationService,
             $notificationService,
